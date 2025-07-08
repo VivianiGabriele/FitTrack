@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Modern background with gradient */
+    body {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        min-height: 100vh;
+        color: #f8f9fa;
+    }
+
+    /* Main container */
+    .client-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem auto;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Section header */
+    .section-header {
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .section-header h2 {
+        color: white;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-header h2:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+        width: 50px;
+        height: 4px;
+        background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+        border-radius: 2px;
+    }
+
+    /* Modern cards */
+    .modern-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .modern-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Card header with gradient */
+    .card-header-modern {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        color: white;
+        padding: 1.25rem 1.5rem;
+        border-bottom: none;
+    }
+
+    /* Readable tables */
+    .modern-table {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 0 0 12px 12px;
+        overflow: hidden;
+    }
+
+    .modern-table th {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-weight: 600;
+        padding: 1rem;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+
+    .modern-table td {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.9);
+        vertical-align: middle;
+    }
+
+    .modern-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .modern-table tr:hover td {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Modern buttons */
+    .btn-modern {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+        color: white;
+    }
+
+    .btn-outline-modern {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        background: transparent;
+    }
+
+    .btn-outline-modern:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    /* Alert styling */
+    .alert-modern {
+        background: rgba(255, 193, 7, 0.1);
+        border: 1px solid rgba(255, 193, 7, 0.2);
+        color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+    }
+
+    /* Comment section */
+    .comment-section {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 1.5rem;
+        border-left: 4px solid #8E2DE2;
+    }
+
+    .comment-item {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-left: 3px solid #FF416C;
+    }
+
+    .comment-item-private {
+        border-left-color: #8E2DE2;
+        background: rgba(142, 45, 226, 0.08);
+    }
+
+    /* Badge styling */
+    .badge-modern {
+        font-size: 0.75rem;
+        padding: 0.35em 0.75em;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .badge-success {
+        background: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+    }
+
+    .badge-warning {
+        background: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+    }
+
+    /* Text colors */
+    .text-muted {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .client-container {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="client-container container my-4">
+    <!-- Header section -->
+    <div class="section-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <h2>
+                <i class="fas fa-user me-2"></i>Client Details: {{ client.username }}
+            </h2>
+            <a href="{% url 'coach_dashboard' %}" class="btn btn-outline-modern">
+                <i class="fas fa-arrow-left me-1"></i> Back to list
+            </a>
+        </div>
+    </div>
+
+    <!-- Client Information Section -->
+    <div class="modern-card animate-fade-in">
+        <div class="card-header-modern">
+            <h4><i class="fas fa-info-circle me-2"></i>Information</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-white"><strong>Age:</strong> {{ client.age }}</p>
+                    <p class="text-white"><strong>Description:</strong></p>
+                    <p class="text-muted">{{ client.description }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="text-white"><strong>Assigned Coach:</strong> {{ assignment.coach.username }}</p>
+                    <p class="text-white"><strong>Assignment Date:</strong> {{ assignment.date_assigned|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workouts Section -->
+    <div class="modern-card animate-fade-in" style="animation-delay: 0.1s;">
+        <div class="card-header-modern">
+            <h4><i class="fas fa-dumbbell me-2"></i>Workouts</h4>
+        </div>
+        <div class="card-body p-0">
+            {% if workouts %}
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Exercises</th>
+                            <th>Duration (min)</th>
+                            <th>Notes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for workout in workouts %}
+                            <tr>
+                                <td>{{ workout.date|date:"d/m/Y" }}</td>
+                                <td>
+                                    <ul class="list-unstyled">
+                                        {% for exercise in workout.exercises.split %}
+                                            <li class="text-white">{{ exercise }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td class="text-white">{{ workout.duration }}</td>
+                                <td class="text-muted">{{ workout.notes|default:"-" }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-modern m-3">
+                    <i class="fas fa-exclamation-circle me-2"></i>No workouts recorded for this client.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Goals Section -->
+    <div class="modern-card animate-fade-in" style="animation-delay: 0.2s;">
+        <div class="card-header-modern">
+            <h4><i class="fas fa-bullseye me-2"></i>Goals</h4>
+        </div>
+        <div class="card-body p-0">
+            {% if goals %}
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Target Weight</th>
+                            <th>Target Body Fat</th>
+                            <th>Muscle Mass</th>
+                            <th>Water %</th>
+                            <th>Calories</th>
+                            <th>Completed</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for goal in goals %}
+                            <tr>
+                                <td class="text-white">{{ goal.date|date:"d/m/Y" }}</td>
+                                <td class="text-white">{{ goal.weight|default:"-" }}</td>
+                                <td class="text-white">{{ goal.body_fat|default:"-" }}</td>
+                                <td class="text-white">{{ goal.muscle_mass|default:"-" }}</td>
+                                <td class="text-white">{{ goal.water_percentage|default:"-" }}</td>
+                                <td class="text-white">{{ goal.calories|default:"-" }}</td>
+                                <td>
+                                    {% if goal.is_completed %}
+                                        <span class="badge-modern badge-success">Yes</span>
+                                    {% else %}
+                                        <span class="badge-modern badge-warning">No</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-modern m-3">
+                    <i class="fas fa-exclamation-circle me-2"></i>No goals recorded for this client.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Measurements Section -->
+    <div class="modern-card animate-fade-in" style="animation-delay: 0.3s;">
+        <div class="card-header-modern">
+            <h4><i class="fas fa-ruler-combined me-2"></i>Measurements</h4>
+        </div>
+        <div class="card-body p-0">
+            {% if measurements %}
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Weight (kg)</th>
+                            <th>Body Fat (%)</th>
+                            <th>Muscle Mass (kg)</th>
+                            <th>Water (%)</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for m in measurements %}
+                            <tr>
+                                <td class="text-white">{{ m.date|date:"d/m/Y" }}</td>
+                                <td class="text-white">{{ m.weight|default:"-" }}</td>
+                                <td class="text-white">{{ m.body_fat|default:"-" }}</td>
+                                <td class="text-white">{{ m.muscle_mass|default:"-" }}</td>
+                                <td class="text-white">{{ m.water_percentage|default:"-" }}</td>
+                                <td class="text-muted">{{ m.notes|default:"-" }}</td>
+                                <td>
+                                    {% if request.user == assignment.coach %}
+                                        <button class="btn btn-sm btn-modern" data-bs-toggle="collapse"
+                                                data-bs-target="#commentForm{{ m.id }}">
+                                            <i class="fas fa-comment me-1"></i> Comment
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <!-- Comment Form Row -->
+                            {% if request.user == assignment.coach and m.progress_report %}
+                                <tr class="collapse" id="commentForm{{ m.id }}">
+                                    <td colspan="7">
+                                        <div class="comment-section p-3">
+                                            <h6 class="text-white">Add Comment</h6>
+                                            <form method="post" action="{% url 'add_measurement_comment' m.id %}">
+                                                {% csrf_token %}
+                                                <div class="mb-3">
+                                                    <textarea name="comment" class="form-control" rows="3"
+                                                              style="background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2);"
+                                                              placeholder="Enter your comment..." required></textarea>
+                                                </div>
+                                                <div class="form-check mb-3">
+                                                    <input type="checkbox" name="is_private" id="private{{ m.id }}"
+                                                           class="form-check-input" style="background: rgba(255, 255, 255, 0.1);">
+                                                    <label for="private{{ m.id }}" class="form-check-label text-muted">
+                                                        Private comment (visible only to coaches)
+                                                    </label>
+                                                </div>
+                                                <button type="submit" class="btn btn-sm btn-modern">
+                                                    <i class="fas fa-paper-plane me-1"></i> Submit
+                                                </button>
+                                            </form>
+
+                                            <!-- Existing Comments -->
+                                            {% with m.progress_report.comments.all as comments %}
+                                                {% if comments %}
+                                                    <div class="mt-3">
+                                                        <h6 class="text-white">Previous Comments</h6>
+                                                        {% for comment in comments %}
+                                                            <div class="comment-item {% if comment.is_private %}comment-item-private{% endif %}">
+                                                                <div class="d-flex justify-content-between">
+                                                                    <strong class="text-white">{{ comment.coach.username }}</strong>
+                                                                    <small class="text-muted">{{ comment.created_at|date:"d/m/Y H:i" }}</small>
+                                                                </div>
+                                                                <p class="text-muted mb-1">{{ comment.comment }}</p>
+                                                                {% if comment.is_private %}
+                                                                    <span class="badge-modern" style="background: rgba(142, 45, 226, 0.2); color: #8E2DE2;">
+                                                                        <i class="fas fa-lock me-1"></i> Private
+                                                                    </span>
+                                                                {% endif %}
+                                                                {% if comment.coach == request.user %}
+                                                                    <div class="mt-2">
+                                                                        <a href="{% url 'delete_progress_comment' comment.pk %}"
+                                                                           class="btn btn-sm btn-outline-modern">
+                                                                            <i class="fas fa-trash me-1"></i> Delete
+                                                                        </a>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-modern m-3">
+                    <i class="fas fa-exclamation-circle me-2"></i>No measurements recorded for this client.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animations to cards
+        const cards = document.querySelectorAll('.modern-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease-out';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 150 * index);
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block extra_css %}
+<style>
+    /* Modern background with gradient */
+    body {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        min-height: 100vh;
+        color: #f8f9fa;
+    }
+
+    .goal-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin: 2rem auto;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 800px;
+    }
+
+    /* Section header */
+    .goal-header {
+        margin-bottom: 2rem;
+        position: relative;
+        text-align: center;
+    }
+
+    .goal-header h3 {
+        color: white;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    .goal-header h3:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+        border-radius: 2px;
+    }
+
+    /* Form styling */
+    .goal-form .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+    }
+
+    .goal-form .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #8E2DE2;
+        box-shadow: 0 0 0 0.25rem rgba(142, 45, 226, 0.25);
+        color: white;
+    }
+
+    .goal-form label {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Modern buttons */
+    .btn-modern {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+        color: white;
+    }
+
+    .btn-outline-modern {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        background: transparent;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-modern:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    /* Help text */
+    .form-text {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .goal-container {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="goal-container animate-fade-in">
+        <!-- Header -->
+        <div class="goal-header">
+            <h3>
+                {% if object %}
+                    <i class="fas fa-edit me-2"></i>Edit Goal
+                {% else %}
+                    <i class="fas fa-plus me-2"></i>New Goal
+                {% endif %}
+            </h3>
+        </div>
+
+        <form method="post" novalidate class="goal-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form.date|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.weight|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.body_fat|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.muscle_mass|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.water_percentage|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.calories|as_crispy_field }}
+                </div>
+                <div class="col-12">
+                    {{ form.notes|as_crispy_field }}
+                </div>
+
+                <div class="col-12 mt-4 d-flex gap-3">
+                    <button type="submit" class="btn btn-modern">
+                        <i class="fas fa-save me-1"></i> Save
+                    </button>
+                    <a href="{% url 'goal_list' %}" class="btn btn-outline-modern">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Date picker initialization
+    const dateField = document.getElementById('{{ form.date.id_for_label }}');
+    if (dateField && !dateField.value) {
+        dateField.value = new Date().toISOString().split('T')[0];
+    }
+
+    // Add modern styling to all form controls
+    document.querySelectorAll('.goal-form input, .goal-form select, .goal-form textarea').forEach(el => {
+        el.classList.add('form-control');
+    });
+});
+</script>
+{% endblock %}

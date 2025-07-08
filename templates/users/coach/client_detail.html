@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>
+                <i class="fas fa-user me-2"></i>Client Details: {{ client.username }}
+            </h2>
+            <a href="{% url 'coach_dashboard' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to list
+            </a>
+        </div>
+
+        <!-- Client Information Section -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h4><i class="fas fa-info-circle me-2"></i>Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Age:</strong> {{ client.age }}</p>
+                        <p><strong>Description:</strong></p>
+                        <p>{{ client.description }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Assigned Coach:</strong> {{ assignment.coach.username }}</p>
+                        <p><strong>Assignment Date:</strong> {{ assignment.date_assigned|date:"d/m/Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workouts Section -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-success text-white">
+                <h4><i class="fas fa-dumbbell me-2"></i>Workouts</h4>
+            </div>
+            <div class="card-body">
+                {% if workouts %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Exercises</th>
+                                <th>Duration (min)</th>
+                                <th>Notes</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for workout in workouts %}
+                                <tr>
+                                    <td>{{ workout.date|date:"d/m/Y" }}</td>
+                                    <td>
+                                        <ul class="list-unstyled">
+                                            {% for exercise in workout.exercises.split %}
+                                                <li>{{ exercise }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td>{{ workout.duration }}</td>
+                                    <td>{{ workout.notes|default:"-" }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        No workouts recorded for this client.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Goals Section -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="fas fa-bullseye me-2"></i>Goals</h4>
+            </div>
+            <div class="card-body">
+                {% if goals %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Target Weight</th>
+                                <th>Target Body Fat</th>
+                                <th>Muscle Mass</th>
+                                <th>Water %</th>
+                                <th>Calories</th>
+                                <th>Completed</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for goal in goals %}
+                                <tr>
+                                    <td>{{ goal.date|date:"d/m/Y" }}</td>
+                                    <td>{{ goal.weight|default:"-" }}</td>
+                                    <td>{{ goal.body_fat|default:"-" }}</td>
+                                    <td>{{ goal.muscle_mass|default:"-" }}</td>
+                                    <td>{{ goal.water_percentage|default:"-" }}</td>
+                                    <td>{{ goal.calories|default:"-" }}</td>
+                                    <td>
+                                        {% if goal.is_completed %}
+                                            <span class="badge bg-success">Yes</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">No</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        No goals recorded for this client.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Measurements Section -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h4><i class="fas fa-ruler-combined me-2"></i>Measurements</h4>
+            </div>
+            <div class="card-body">
+                {% if measurements %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Weight (kg)</th>
+                                <th>Body Fat (%)</th>
+                                <th>Muscle Mass (kg)</th>
+                                <th>Water (%)</th>
+                                <th>Notes</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for m in measurements %}
+                                <tr>
+                                    <td>{{ m.date|date:"d/m/Y" }}</td>
+                                    <td>{{ m.weight|default:"-" }}</td>
+                                    <td>{{ m.body_fat|default:"-" }}</td>
+                                    <td>{{ m.muscle_mass|default:"-" }}</td>
+                                    <td>{{ m.water_percentage|default:"-" }}</td>
+                                    <td>{{ m.notes|default:"-" }}</td>
+                                    <td>
+                                        {% if request.user.is_coach %}
+                                            <button class="btn btn-sm btn-primary" data-bs-toggle="collapse"
+                                                    data-bs-target="#commentForm{{ m.id }}">
+                                                <i class="fas fa-comment me-1"></i> Comment
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <!-- Comment Form Row -->
+                                {% if request.user.is_coach %}
+                                    <tr class="collapse" id="commentForm{{ m.id }}">
+                                        <td colspan="7">
+                                            <div class="p-3 bg-light">
+                                                <h6>Add Comment</h6>
+                                                <form method="post" action="{% url 'add_measurement_comment' m.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="mb-3">
+                                            <textarea name="comment" class="form-control" rows="3"
+                                                      placeholder="Enter your comment..." required></textarea>
+                                                    </div>
+                                                    <div class="form-check mb-3">
+                                                        <input type="checkbox" name="is_private" id="private{{ m.id }}"
+                                                               class="form-check-input">
+                                                        <label for="private{{ m.id }}" class="form-check-label">
+                                                            Private comment (visible only to coaches)
+                                                        </label>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="fas fa-paper-plane me-1"></i> Submit
+                                                    </button>
+                                                </form>
+
+                                                <!-- Existing Comments -->
+                                                {% with m.progress_report.comments.all as comments %}
+                                                    {% if comments %}
+                                                        <div class="mt-3">
+                                                            <h6>Previous Comments</h6>
+                                                            {% for comment in comments %}
+                                                                <div class="card mb-2 {% if comment.is_private %}bg-light{% endif %}">
+                                                                    <div class="card-body">
+                                                                        <div class="d-flex justify-content-between">
+                                                                            <strong>{{ comment.coach.username }}</strong>
+                                                                            <small>{{ comment.created_at|date:"d/m/Y H:i" }}</small>
+                                                                        </div>
+                                                                        <p>{{ comment.comment }}</p>
+                                                                        {% if comment.is_private %}
+                                                                            <span class="badge bg-warning text-dark">
+                                                        <i class="fas fa-lock"></i> Private
+                                                    </span>
+                                                                        {% endif %}
+                                                                        {% if comment.coach == request.user %}
+                                                                            <div class="mt-2">
+                                                                                <a href="{% url 'delete_progress_comment' comment.pk %}"
+                                                                                   class="btn btn-sm btn-outline-danger">
+                                                                                    <i class="fas fa-trash me-1"></i> Delete
+                                                                                </a>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        No measurements recorded for this client.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

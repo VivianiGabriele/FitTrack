@@ -1,0 +1,8 @@
+<div class="notification">
+    <h4>{{ notification.title }}</h4>
+    <p>{{ notification.message }}</p>
+    <div class="actions">
+        <a href="{{ notification.action_url }}?action=accept" class="btn btn-success">Accetta</a>
+        <a href="{{ notification.action_url }}?action=reject" class="btn btn-danger">Rifiuta</a>
+    </div>
+</div>

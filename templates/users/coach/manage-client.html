@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-users me-2 text-primary"></i>Client Management
+        </h2>
+        <span class="badge bg-primary">
+            Assigned clients: {{ assigned_clients.count }}
+        </span>
+    </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">Assign new client</h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        {{ form.client.label_tag }}
+                        {{ form.client }}
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i>Assign
+                        </button>
+                    </div>
+                    <div class="col-12">
+                        {{ form.notes.label_tag }}
+                        {{ form.notes }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if assigned_clients %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">Your clients</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Age</th>
+                            <th>Registered on</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for client in assigned_clients %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'user_profile' client.id %}">
+                                    {{ client.username }}
+                                </a>
+                            </td>
+                            <td>{{ client.age }}</td>
+                            <td>{{ client.date_joined|date:"d/m/Y" }}</td>
+                            <td>
+                                <a href="{% url 'remove_client' client.id %}"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Remove this client?')">
+                                   <i class="fas fa-user-minus"></i> Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        You don't have any assigned clients yet. Use the form above to assign one.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

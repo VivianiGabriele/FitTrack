@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block title %}Sign Up{% endblock title %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        min-height: 100vh;
+        color: #f8f9fa;
+    }
+
+    .signup-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin: 2rem auto;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 600px;
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .signup-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .signup-header h2 {
+        color: white;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+    }
+
+    .signup-header h2::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+        border-radius: 2px;
+    }
+
+    .signup-form .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+    }
+
+    .signup-form .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #8E2DE2;
+        box-shadow: 0 0 0 0.25rem rgba(142, 45, 226, 0.25);
+        color: white;
+    }
+
+    .signup-form label {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-signup {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+
+    .btn-signup:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+    }
+
+    .form-text,
+    .helptext {
+        color: rgba(255, 255, 255, 0.6) !important;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="signup-container">
+        <div class="signup-header">
+            <h2><i class="fas fa-user-plus me-2"></i>Crea un account</h2>
+        </div>
+
+        <form method="POST" class="signup-form">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-signup">Sing Up</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

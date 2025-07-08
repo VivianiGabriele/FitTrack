@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Coach Dashboard - FitTrack Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Sfondo moderno con gradiente */
+    .coach-dashboard {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        min-height: 100vh;
+        color: #f8f9fa;
+        padding: 2rem 0;
+    }
+
+    /* Card styling */
+    .dashboard-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-gradient-header {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        color: white;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stats-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+        border-left: 4px solid #8E2DE2;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .stats-card .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(142, 45, 226, 0.1);
+        color: #8E2DE2;
+    }
+
+    .client-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .client-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+    }
+
+    .client-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .client-avatar {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .progress-thin {
+        height: 8px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+    }
+
+    .section-title {
+        position: relative;
+        padding-bottom: 10px;
+        color: white;
+        font-weight: 600;
+    }
+
+    .section-title:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 40px;
+        height: 3px;
+        background: white;
+        border-radius: 3px;
+    }
+
+    /* Pulsanti moderni */
+    .btn-modern {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+        color: white;
+    }
+
+    .btn-outline-modern {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        background: transparent;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-modern:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .activity-item {
+        border-left: 3px solid #8E2DE2;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .activity-item:hover {
+        background: rgba(255, 255, 255, 0.07);
+    }
+
+    .badge-purple {
+        background: rgba(142, 45, 226, 0.1);
+        color: #8E2DE2;
+    }
+
+    .floating-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        box-shadow: 0 5px 20px rgba(142, 45, 226, 0.3);
+        z-index: 100;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .floating-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+    }
+
+    /* Animazioni */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    /* Text colors */
+    .text-muted {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .text-dark {
+        color: white !important;
+    }
+
+    /* Divider */
+    .divider-modern {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+        margin: 1.5rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="coach-dashboard">
+    <div class="container">
+        <!-- Header Section -->
+        <div class="d-flex justify-content-between align-items-center mb-4 animate-fade-in">
+            <div>
+                <h1 class="display-5 fw-bold mb-2 text-dark">
+                    <i class="fas fa-tachometer-alt me-2" style="color: #8E2DE2;"></i>Coach Dashboard
+                </h1>
+                <p class="lead mb-0 text-muted">Manage your clients and track their progress</p>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{% url 'assign_client' %}" class="btn btn-modern">
+                    <i class="fas fa-user-plus me-2"></i>Assign Client
+                </a>
+                <img src="{% static 'images/coach-icon-purple.png' %}" alt="Coach" class="img-fluid" style="max-height: 80px;">
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="row mb-4 g-3 animate-fade-in" style="animation-delay: 0.1s;">
+            <div class="col-md-4">
+                <div class="stats-card p-3 h-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0 text-white">{{ active_assignments.count }}</h3>
+                            <p class="mb-0 text-muted">Active Clients</p>
+                        </div>
+                        <div class="icon-circle">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card p-3 h-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0 text-white">{{ active_goals|default:"0" }}</h3>
+                            <p class="mb-0 text-muted">Active Goals</p>
+                        </div>
+                        <div class="icon-circle">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card p-3 h-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0 text-white">{{ recent_workouts|default:"0" }}</h3>
+                            <p class="mb-0 text-muted">Recent Workouts</p>
+                        </div>
+                        <div class="icon-circle">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clients Section -->
+        <div class="dashboard-card mb-4 animate-fade-in" style="animation-delay: 0.2s;">
+            <div class="card-header card-gradient-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="section-title mb-0 text-white">
+                        <i class="fas fa-users me-2"></i>My Clients
+                    </h3>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-modern dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-filter me-1"></i>Filter
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" style="background: rgba(15, 12, 41, 0.9); border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <li><a class="dropdown-item text-white" href="#">All Clients</a></li>
+                            <li><a class="dropdown-item text-white" href="#">Active</a></li>
+                            <li><hr class="dropdown-divider" style="border-color: rgba(255, 255, 255, 0.1);"></li>
+                            <li><a class="dropdown-item text-white" href="#">By Progress</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if active_assignments %}
+                    <div class="row g-3">
+                        {% for assignment in active_assignments %}
+                            {% with client=assignment.client %}
+                            <div class="col-lg-6">
+                                <div class="client-card p-3 h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="{% if client.profile_image %}{{ client.profile_image.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
+                                             alt="{{ client.username }}"
+                                             class="client-avatar me-3">
+                                        <div>
+                                            <h4 class="mb-0 text-white">{{ client.username }}</h4>
+                                            <p class="text-muted mb-0">{{ client.age }} years</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <p class="mb-2 text-muted"><strong>Assigned since:</strong> {{ assignment.date_assigned|date:"M d, Y" }}</p>
+                                        <div class="progress progress-thin mb-2">
+                                            <div class="progress-bar" style="width: {{ client.goal_progress|default:'0' }}%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <small class="text-muted">Progress: {{ client.goal_progress|default:'0' }}%</small>
+                                            <small class="text-muted">Last login: {{ client.last_login|date:"M d"|default:"Never" }}</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{% url 'client_detail' client.pk %}" class="btn btn-sm btn-outline-modern">
+                                            <i class="fas fa-chart-line me-1"></i> View Stats
+                                        </a>
+                                        <div>
+                                            <a href="#" class="btn btn-sm btn-outline-modern me-2">
+                                                <i class="fas fa-comment me-1"></i> Message
+                                            </a>
+                                            <a href="{% url 'end_assignment' assignment.id %}" class="btn btn-sm btn-modern">
+                                                <i class="fas fa-user-minus me-1"></i> Remove
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <img src="{% static 'images/no-clients.svg' %}" alt="No clients" class="img-fluid mb-3" style="max-height: 180px; filter: brightness(0) invert(1); opacity: 0.7;">
+                        <h4 class="text-white">No clients assigned yet</h4>
+                        <p class="text-muted mb-3">You can assign clients using the button above</p>
+                        <a href="{% url 'assign_client' %}" class="btn btn-modern">
+                            <i class="fas fa-user-plus me-2"></i>Assign Client
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="dashboard-card mb-4 animate-fade-in" style="animation-delay: 0.3s;">
+            <div class="card-header card-gradient-header">
+                <h3 class="section-title mb-0 text-white">
+                    <i class="fas fa-bell me-2"></i>Recent Activity
+                </h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% if recent_activities %}
+                        {% for activity in recent_activities %}
+                            <div class="list-group-item activity-item p-3 border-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-{{ activity.icon }} me-2" style="color: #8E2DE2;"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1 text-white">{{ activity.message }}</h6>
+                                        <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted">No recent activity to show</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <a href="{% url 'assign_client' %}" class="floating-btn" title="Assign New Client">
+        <i class="fas fa-user-plus"></i>
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate cards on load
+        const cards = document.querySelectorAll('.client-card, .stats-card, .dashboard-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.5s ease ' + (index * 0.1) + 's';
+
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Pulse animation for floating button
+        const floatBtn = document.querySelector('.floating-btn');
+        setInterval(() => {
+            floatBtn.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                floatBtn.style.transform = 'scale(1)';
+            }, 800);
+        }, 2000);
+
+        // Add confirmation for client removal
+        const removeButtons = document.querySelectorAll('.btn-modern');
+        removeButtons.forEach(button => {
+            if (button.innerHTML.includes('user-minus')) {
+                button.addEventListener('click', function(e) {
+                    if (!confirm('Are you sure you want to remove this client?')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

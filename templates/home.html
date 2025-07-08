@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <style>
+        /* Modern Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: white;
+            border-radius: 0 0 30px 30px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('{% static "images/dots-pattern.png" %}') center/cover;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(to right, #fff, #c9d6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .btn-hero-primary {
+            background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(142, 45, 226, 0.4);
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(142, 45, 226, 0.6);
+            color: white;
+        }
+
+        .btn-hero-outline {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            background: transparent;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hero-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-img-container {
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Features Section */
+        .features-section {
+            position: relative;
+            z-index: 2;
+            margin-top: -30px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+            color: white;
+            font-size: 2rem;
+            border-radius: 50%;
+        }
+
+        .feature-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .feature-text {
+            color: #7f8c8d;
+        }
+
+        /* Dashboard Section */
+        .dashboard-section {
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+            padding: 5rem 0;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-card-header {
+            background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .dashboard-card-title {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Workout Items Styling */
+        .workout-item {
+            transition: all 0.3s ease;
+            border-left: 3px solid #FF416C;
+        }
+
+        .workout-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            background-color: #fff !important;
+        }
+
+        /* Consistent spacing for both sections */
+        .dashboard-card .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Badge styling */
+        .badge {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .goal-progress {
+            height: 8px;
+            border-radius: 4px;
+            background: #e9ecef;
+        }
+
+        .goal-progress-bar {
+            background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+            border-radius: 4px;
+        }
+
+        .btn-fitness {
+            background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-fitness:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(142, 45, 226, 0.3);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-img-container {
+                margin-top: 2rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Home - FitTrack Pro{% endblock %}
+
+{% block content %}
+    <!-- Modern Hero Section -->
+    <section class="hero-section py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">Transform Your Fitness Journey</h1>
+                    <p class="hero-subtitle">Track workouts, set goals, and achieve results with our comprehensive platform.</p>
+                    {% if user.is_authenticated %}
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="{% url 'workout_list' %}" class="btn btn-hero-primary">
+                                <i class="fas fa-dumbbell me-2"></i>My Workouts
+                            </a>
+                            <a href="{% url 'goal_list' %}" class="btn btn-hero-outline">
+                                <i class="fas fa-trophy me-2"></i>My Goals
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="{% url 'signup' %}" class="btn btn-hero-primary">Start Free Trial</a>
+                            <a href="{% url 'login' %}" class="btn btn-hero-outline">Login</a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-img-container text-center">
+                        <img src="{% static 'images/LOGO.png' %}" alt="Fitness App" class="img-fluid" style="max-height: 400px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modern Features Section -->
+    <section class="features-section py-5">
+        <div class="container py-5">
+            <h2 class="text-center mb-5 display-5 fw-bold">Why Choose FitTrack?</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="feature-title text-center">Progress Tracking</h3>
+                        <p class="feature-text text-center">Follow your fitness journey with detailed analysis and visual progress reports.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h3 class="feature-title text-center">Workout Plans</h3>
+                        <p class="feature-text text-center">Access hundreds of professional routines for all fitness levels.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h3 class="feature-title text-center">Goal Setting</h3>
+                        <p class="feature-text text-center">Set and achieve personal goals with our smart tracking system.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if user.is_authenticated %}
+        <!-- Modern Dashboard Section -->
+        <section class="dashboard-section">
+            <div class="container">
+                <h2 class="text-center mb-5 display-5 fw-bold">Your Dashboard</h2>
+                <div class="row g-4">
+                    <!-- Recent Workouts -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card h-100 d-flex flex-column">
+                            <div class="dashboard-card-header">
+                                <h5 class="dashboard-card-title"><i class="fas fa-fire me-2"></i>Recent Workouts</h5>
+                            </div>
+                            <div class="card-body p-4 d-flex flex-column" style="flex: 1;">
+                                {% if recent_workouts %}
+                                    <div style="flex: 1;">
+                                        {% for workout in recent_workouts %}
+                                            <div class="workout-item mb-4 p-3 rounded-3" style="background-color: #f8f9fa; border-left: 3px solid #FF416C;">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <div>
+                                                        <strong class="text-dark">{{ workout.name }}</strong>
+                                                        <div class="text-muted small mt-1">
+                                                            <i class="fas fa-dumbbell me-1"></i>
+                                                            {{ workout.exercises|truncatewords:5 }}
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                    <span class="badge bg-primary rounded-pill px-3 py-1">
+                                        <i class="far fa-clock me-1"></i>
+                                        {{ workout.duration }} min
+                                    </span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-muted">
+                                                        <i class="far fa-calendar-alt me-1"></i>
+                                                        {{ workout.date|date:"d/m/Y" }}
+                                                    </small>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-burn me-1"></i>
+                                                        {{ workout.calories|default:"0" }} kcal
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-4" style="flex: 1;">
+                                        <i class="fas fa-dumbbell fa-2x text-muted mb-3"></i>
+                                        <p class="mb-3">No recent workouts</p>
+                                        <a href="{% url 'workout_list' %}" class="btn btn-fitness">
+                                            Add workout
+                                        </a>
+                                    </div>
+                                {% endif %}
+
+                                <div class="mt-auto">
+                                    <a href="{% url 'workout_list' %}" class="btn btn-fitness w-100">
+                                        <i class="fas fa-list-ul me-2"></i>View all workouts
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Goals -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-header">
+                                <h5 class="dashboard-card-title"><i class="fas fa-trophy me-2"></i>Active Goals</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                {% for goal in active_goals %}
+                                    <div class="goal-item mb-4 p-3 rounded-3" style="background-color: #f8f9fa;">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <strong class="text-dark">{{ goal.get_goal_description }}</strong>
+                                            <span class="badge bg-primary rounded-pill px-3 py-1">
+                            {{ goal.overall_progress|default:0 }}%
+                        </span>
+                                        </div>
+                                        <div class="goal-progress mb-2">
+                                            <div class="goal-progress-bar"
+                                                 style="width: {{ goal.overall_progress|default:0 }}%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="far fa-calendar-alt me-1"></i>
+                                                Deadline: {{ goal.date|date:"d/m/Y" }}
+                                            </small>
+                                            <small class="text-muted">
+                                                {% if goal.is_completed %}
+                                                    <i class="fas fa-check-circle text-success me-1"></i> Completed
+                                                {% else %}
+                                                    <i class="fas fa-running text-primary me-1"></i> In progress
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-trophy fa-2x text-muted mb-3"></i>
+                                        <p class="mb-3">No active goals</p>
+                                        <a href="{% url 'add_goal' %}" class="btn btn-fitness">
+                                            Create a goal
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                                <a href="{% url 'goal_list' %}" class="btn btn-fitness mt-3 w-100">
+                                    <i class="fas fa-list-ul me-2"></i>Manage goals
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        // Load animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hero elements animation
+            const heroElements = document.querySelectorAll('.hero-title, .hero-subtitle, .btn');
+            heroElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    el.style.transition = `all 0.6s ease-out ${index * 0.1}s`;
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100);
+            });
+
+            // Feature cards animation
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = `all 0.6s ease-out ${index * 0.1 + 0.3}s`;
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+    </script>
+{% endblock %}

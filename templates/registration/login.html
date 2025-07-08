@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        min-height: 100vh;
+        color: #f8f9fa;
+    }
+
+    .login-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin: 4rem auto;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 500px;
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .login-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .login-header h2 {
+        color: white;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    .login-header h2:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+        border-radius: 2px;
+    }
+
+    .btn-modern {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+        color: white;
+    }
+
+    a {
+        color: #ccc;
+    }
+
+    a:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block title %}Log In{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="login-container">
+        <div class="login-header">
+            <h2><i class="fas fa-sign-in-alt me-2"></i>Login</h2>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="mt-4 text-center">
+                <button class="btn btn-modern w-100" type="submit">Log In</button>
+            </div>
+        </form>
+        <div class="text-center mt-3">
+            <a href="{% url 'password_reset' %}">Forgot your password?</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
