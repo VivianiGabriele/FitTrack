@@ -1,0 +1,10 @@
+{# reminders/templates/reminders/email/workout_reminder.txt #}
+Ciao {{ user.username }},
+
+Abbiamo notato che non hai registrato allenamenti nell'ultima settimana. 💪
+
+Ricordati che i tuoi obiettivi ti stanno aspettando!
+Accedi alla tua dashboard per riprendere il tuo percorso:
+{{ protocol }}://{{ domain }}{% url 'workout_list' %}
+
+Il Team FitTrack
