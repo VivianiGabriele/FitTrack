@@ -1,25 +1,112 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
+{% load static crispy_forms_tags %}
+
+{% block extra_css %}
+<style>
+    /* Stili coerenti con il tema precedente */
+    .bg-purple {
+        background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+    }
+    
+    .btn-purple {
+        background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+    }
+    
+    .btn-purple:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+        color: white;
+    }
+    
+    .assign-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        margin-top: 2rem;
+    }
+    
+    .card-header-modern {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .card-body-modern {
+        padding: 2rem;
+    }
+    
+    /* Stili per il form */
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+    
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #8E2DE2;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(142, 45, 226, 0.25);
+    }
+    
+    label {
+        color: rgba(255, 255, 255, 0.9);
+    }
+    
+    /* Animazione */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="container my-5">
     <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card">
-                <div class="card-header bg-purple text-white">
-                    <h3><i class="fas fa-user-plus me-2"></i>Assign Client to Coach</h3>
+        <div class="col-lg-8 mx-auto">
+            <div class="assign-card animate-fade-in">
+                <div class="card-header-modern bg-purple">
+                    <h3 class="mb-0 text-white"><i class="fas fa-user-plus me-2"></i>Assign Client to Coach</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body-modern">
                     <form method="post">
                         {% csrf_token %}
                         {{ form|crispy }}
-                        <button type="submit" class="btn btn-purple mt-3">
-                            <i class="fas fa-save me-2"></i>Assign Client
-                        </button>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="submit" class="btn btn-purple">
+                                <i class="fas fa-save me-2"></i>Assign Client
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aggiungi la classe per l'animazione dopo un piccolo delay
+        setTimeout(() => {
+            const card = document.querySelector('.assign-card');
+            card.style.opacity = '1';
+        }, 100);
+    });
+</script>
+{% endblock %}
 {% endblock %}
