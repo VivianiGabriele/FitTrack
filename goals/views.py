@@ -149,6 +149,7 @@ class GoalListView(ListView):
 
         return context
 
+
 class GoalCreateView(LoginRequiredMixin, CreateView):
     model = Goal
     form_class = GoalForm
