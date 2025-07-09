@@ -3,109 +3,142 @@
 
 {% block extra_css %}
 <style>
-    /* Stili coerenti con il tema precedente */
-    .bg-purple {
-        background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+    /* Stili coerenti con il tema */
+    body {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        min-height: 100vh;
+        color: #f8f9fa;
     }
     
-    .btn-purple {
-        background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+    .assignment-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin: 2rem auto;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 800px;
+    }
+
+    .assignment-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .assignment-header h3 {
+        color: white;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    .assignment-header h3::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+        border-radius: 2px;
+    }
+
+    .assignment-form .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+    }
+
+    .assignment-form .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #8E2DE2;
+        box-shadow: 0 0 0 0.25rem rgba(142, 45, 226, 0.25);
+        color: white;
+    }
+
+    .assignment-form label {
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-modern {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
         border: none;
         color: white;
         font-weight: 600;
-        padding: 0.5rem 1.5rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 8px;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
     }
-    
-    .btn-purple:hover {
+
+    .btn-modern:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
         color: white;
     }
-    
-    .assign-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-        margin-top: 2rem;
+
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
     }
-    
-    .card-header-modern {
-        padding: 1.5rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .card-body-modern {
-        padding: 2rem;
-    }
-    
-    /* Stili per il form */
-    .form-control {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
-    }
-    
-    .form-control:focus {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: #8E2DE2;
-        color: white;
-        box-shadow: 0 0 0 0.25rem rgba(142, 45, 226, 0.25);
-    }
-    
-    label {
-        color: rgba(255, 255, 255, 0.9);
-    }
-    
-    /* Animazione */
+
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
-    
-    .animate-fade-in {
-        animation: fadeIn 0.6s ease-out forwards;
+
+    /* Stili specifici per i campi del form */
+    .form-text {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    /* Stili per gli errori */
+    .invalid-feedback {
+        color: #ff6b6b;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="assign-card animate-fade-in">
-                <div class="card-header-modern bg-purple">
-                    <h3 class="mb-0 text-white"><i class="fas fa-user-plus me-2"></i>Assign Client to Coach</h3>
-                </div>
-                <div class="card-body-modern">
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <button type="submit" class="btn btn-purple">
-                                <i class="fas fa-save me-2"></i>Assign Client
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="container py-4">
+    <div class="assignment-container animate-fade-in">
+        <div class="assignment-header">
+            <h3><i class="fas fa-user-plus me-2"></i>Assign Client to Coach</h3>
         </div>
+
+        <form method="POST" class="assignment-form">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-modern">
+                    <i class="fas fa-save me-2"></i>Assign Client
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Aggiungi la classe per l'animazione dopo un piccolo delay
+        // Attiva l'animazione
+        const container = document.querySelector('.assignment-container');
         setTimeout(() => {
-            const card = document.querySelector('.assign-card');
-            card.style.opacity = '1';
+            container.style.opacity = '1';
         }, 100);
+        
+        // Aggiungi stili ai campi select
+        const selects = document.querySelectorAll('select');
+        selects.forEach(select => {
+            select.classList.add('form-control');
+        });
     });
 </script>
 {% endblock %}
