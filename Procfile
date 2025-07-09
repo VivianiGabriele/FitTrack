@@ -1,1 +1,1 @@
-web: gunicorn FitTrack.wsgi
+web: gunicorn FitTrack.wsgi:application --bind 0.0.0.0:$PORT
