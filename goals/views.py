@@ -42,7 +42,7 @@ def goal_list(request):
     return render(request, 'goal_list.html', context)
 
 
-class GoalListView(ListView):
+class GoalListView(LoginRequiredMixin, ListView):
     model = Goal
     template_name = 'goal_list.html'
     context_object_name = 'goals'
@@ -53,88 +53,33 @@ class GoalListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Get measurements ordered by date
+        # Ottieni le ultime misurazioni
         measurements = Measurement.objects.filter(
             user=self.request.user
         ).order_by('date')
 
-        # Get goals ordered by date
-        goals = Goal.objects.filter(
-            user=self.request.user
-        ).order_by('date')
+        # Prepara i dati per i grafici basati sulle misurazioni
+        context['weight_labels'] = json.dumps([
+            m.date.strftime('%Y-%m-%d') for m in measurements if m.weight
+        ])
+        context['weight_values'] = json.dumps([
+            float(m.weight) for m in measurements if m.weight
+        ])
 
-        # Prepare measurement data
-        measurement_data = []
-        for m in measurements:
-            if m.weight or m.body_fat:
-                measurement_data.append({
-                    'date': m.date.strftime('%Y-%m-%d'),
-                    'weight': float(m.weight) if m.weight else None,
-                    'fat': float(m.body_fat) if m.body_fat else None
-                })
+        context['fat_labels'] = json.dumps([
+            m.date.strftime('%Y-%m-%d') for m in measurements if m.body_fat
+        ])
+        context['fat_values'] = json.dumps([
+            float(m.body_fat) for m in measurements if m.body_fat
+        ])
 
-        # Prepare goal data
-        goal_data = []
-        for g in goals:
-            if g.weight or g.body_fat:
-                goal_data.append({
-                    'date': g.date.strftime('%Y-%m-%d'),
-                    'weight': float(g.weight) if g.weight else None,
-                    'fat': float(g.body_fat) if g.body_fat else None
-                })
-
-        # Create aligned data for charts
-        weight_labels = []
-        weight_values = []
-        weight_goals = []
-
-        fat_labels = []
-        fat_values = []
-        fat_goals = []
-
-        # Process weight data
-        for m in measurement_data:
-            if m['weight'] is not None:
-                weight_labels.append(m['date'])
-                weight_values.append(m['weight'])
-
-                # Find closest goal for this measurement date
-                closest_goal = None
-                for g in goal_data:
-                    if g['weight'] is not None and g['date'] >= m['date']:
-                        closest_goal = g['weight']
-                        break
-
-                weight_goals.append(closest_goal)
-
-        # Process fat data
-        for m in measurement_data:
-            if m['fat'] is not None:
-                fat_labels.append(m['date'])
-                fat_values.append(m['fat'])
-
-                # Find closest goal for this measurement date
-                closest_goal = None
-                for g in goal_data:
-                    if g['fat'] is not None and g['date'] >= m['date']:
-                        closest_goal = g['fat']
-                        break
-
-                fat_goals.append(closest_goal)
-
-        # Add to context
-        context['weight_labels'] = json.dumps(weight_labels)
-        context['weight_values'] = json.dumps(weight_values)
-        context['weight_goals'] = json.dumps(weight_goals)
-
-        context['fat_labels'] = json.dumps(fat_labels)
-        context['fat_values'] = json.dumps(fat_values)
-        context['fat_goals'] = json.dumps(fat_goals)
-
-        # Add latest measurements
+        # Mantieni le ultime misurazioni per la tabella
         context['latest_measurements'] = measurements.order_by('-date')[:10]
 
-        # Add coach comments if available
+        # Aggiungi i commenti del coach
+        from django.db.models import Q
+        from users.models import ProgressComment
+
         active_assignment = ClientAssignment.objects.filter(
             client=self.request.user,
             is_active=True
@@ -142,13 +87,13 @@ class GoalListView(ListView):
 
         if active_assignment:
             context['comments'] = ProgressComment.objects.filter(
-                progress__assignment=active_assignment,
-                user=self.request.user
-            ).order_by('-created_at')
-            context['active_assignment'] = active_assignment
+                Q(progress__assignment=active_assignment),
+                Q(is_private=False) | Q(coach=active_assignment.coach)
+            ).select_related('coach').order_by('-created_at')
+        else:
+            context['comments'] = []
 
         return context
-
 
 class GoalCreateView(LoginRequiredMixin, CreateView):
     model = Goal
