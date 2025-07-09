@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
-
-
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,9 +29,13 @@ SECRET_KEY = 'django-insecure-k_ho5uzil&^bzhdvthv1a+o3v4bz2wt@o(9-w4=u*@oh^2=bg%
 #production:
 DEBUG = False
 ALLOWED_HOSTS = ['*']
-import dj_database_url
+
+# Sostituisci con:
 DATABASES = {
-    'default': dj_database_url.config(default='postgres://user:pass@localhost/dbname', conn_max_age=600)
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'postgresql://user:pass@localhost/dbname'),
+        conn_max_age=600
+    )
 }
 
 
@@ -135,7 +138,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -148,6 +152,10 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
     },
     'loggers': {
         'reminders.middleware': {
