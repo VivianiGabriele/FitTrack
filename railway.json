@@ -1,8 +1,12 @@
 {
   "build": {
-    "commands": [
-      "python manage.py collectstatic --noinput"
-    ]
+    "useNixpacks": true,
+    "builder": "nixpacks",
+    "buildCommand": "python manage.py collectstatic --noinput && pip install -r requirements.txt",
+    "installCommand": "pip install -r requirements.txt",
+    "startCommand": "gunicorn FitTrack.wsgi:application --bind 0.0.0.0:$PORT"
   },
-  "start": "gunicorn FitTrack.wsgi"
+  "deploy": {
+    "startCommand": "gunicorn FitTrack.wsgi:application --bind 0.0.0.0:$PORT"
+  }
 }
