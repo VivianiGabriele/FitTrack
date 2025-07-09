@@ -131,8 +131,17 @@ try:
     # Static files (CSS, JavaScript, Images)
     STATIC_URL = '/static/'
     STATIC_ROOT = BASE_DIR / 'staticfiles'
-    STATICFILES_DIRS = [BASE_DIR / 'static']
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static',
+    ]
+
+    # WhiteNoise configuration
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    WHITENOISE_MANIFEST_STRICT = False  # Important for production
+
+    # Create staticfiles directory if not exists
+    if not os.path.exists(STATIC_ROOT):
+        os.makedirs(STATIC_ROOT)
 
     # Default primary key field type
     DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
