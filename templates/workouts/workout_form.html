@@ -1,216 +1,233 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{% if object %}Edit{% else %}New{% endif %} Workout - FitTrack Pro{% endblock %}
+{% block title %}My Workouts - FitTrack Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Main container with dark gradient */
+    .workouts-container {
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        min-height: 100vh;
+        color: white;
+        padding-top: 2rem;
+        padding-bottom: 4rem;
+    }
+
+    /* Workout cards with glass effect */
+    .workout-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        overflow: hidden;
+        cursor: pointer;
+        height: 100%;
+    }
+
+    .workout-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .workout-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+    }
+
+    /* Card content styling */
+    .workout-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .workout-card .card-title {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: white;
+    }
+
+    .workout-card .card-text {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Badge with gradient */
+    .workout-badge {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        color: white;
+        font-weight: 600;
+        padding: 0.35em 0.75em;
+        border-radius: 8px;
+    }
+
+    /* Date text */
+    .workout-date {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
+    }
+
+    /* Footer arrow */
+    .workout-arrow {
+        color: rgba(255, 255, 255, 0.6);
+        transition: all 0.3s ease;
+    }
+
+    .workout-card:hover .workout-arrow {
+        color: white;
+        transform: translateX(3px);
+    }
+
+    /* Empty state styling */
+    .empty-workouts {
+        padding: 4rem 0;
+        text-align: center;
+    }
+
+    .empty-workouts img {
+        max-height: 220px;
+        margin-bottom: 2rem;
+        filter: brightness(0) invert(1) opacity(0.8);
+    }
+
+    .empty-workouts h3 {
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .empty-workouts p {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    /* Primary button with gradient */
+    .btn-gradient {
+        background: linear-gradient(135deg, #8E2DE2 0%, #FF416C 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+        color: white;
+    }
+
+    /* Section header */
+    .section-header {
+        margin-bottom: 3rem;
+    }
+
+    .section-header h1 {
+        color: white;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-header h1:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+        width: 50px;
+        height: 4px;
+        background: linear-gradient(90deg, #8E2DE2 0%, #FF416C 100%);
+        border-radius: 2px;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="wrapper d-flex flex-column min-vh-100">
-  <section class="flex-grow-1 py-5">
-    <div class="container h-100">
-      <div class="row justify-content-center h-100">
-        <div class="col-lg-8">
-          <div class="card border-0 shadow-lg">
-            <div class="card-header bg-gradient-fitness text-white py-4">
-              <div class="d-flex justify-content-between align-items-center">
-                <h2 class="h4 mb-0 fw-bold">
-                  <i class="fas {% if object %}fa-edit{% else %}fa-plus-circle{% endif %} me-2"></i>
-                  {% if object %}Edit Workout{% else %}Create New Workout{% endif %}
-                </h2>
-                {% if object %}
-                <form method="post" action="{% url 'workout_delete' object.pk %}">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-sm btn-outline-light"
-                          onclick="return confirm('Are you sure you want to permanently delete this workout?')">
-                    <i class="fas fa-trash-alt me-1"></i> Delete
-                  </button>
-                </form>
-                {% endif %}
-              </div>
+<div class="workouts-container">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="section-header d-flex justify-content-between align-items-center">
+      <h1>
+        <i class="fas fa-dumbbell me-3"></i>My Workouts
+      </h1>
+      <a href="{% url 'workout_create' %}" class="btn btn-gradient">
+        <i class="fas fa-plus me-2"></i>New Workout
+      </a>
+    </div>
+
+    {% if workouts %}
+    <div class="row g-4">
+      {% for workout in workouts %}
+      <div class="col-md-6 col-lg-4">
+        <div class="workout-card" onclick="window.location.href='{% url 'workout_update' workout.pk %}'">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="workout-badge">{{ workout.duration }} min</span>
+              <small class="workout-date">{{ workout.date|date:"M d, Y" }}</small>
             </div>
-
-            <div class="card-body p-5">
-              <form method="post" class="needs-validation" novalidate>
-                {% csrf_token %}
-
-                <!-- Data -->
-                <div class="mb-4">
-                  <label for="{{ form.date.id_for_label }}" class="form-label fw-medium text-muted mb-2">
-                    <i class="far fa-calendar-alt me-2 text-accent"></i>Workout Date
-                  </label>
-                  <div class="input-group">
-                    {{ form.date }}
-                    <span class="input-group-text bg-white"><i class="fas fa-calendar-day text-accent"></i></span>
-                  </div>
-                  <div class="invalid-feedback">Please select a valid date</div>
-                </div>
-
-                <!-- Durata -->
-                <div class="mb-4">
-                  <label for="{{ form.duration.id_for_label }}" class="form-label fw-medium text-muted mb-2">
-                    <i class="far fa-clock me-2 text-accent"></i>Duration (minutes)
-                  </label>
-                  <div class="input-group">
-                    {{ form.duration }}
-                    <span class="input-group-text bg-white">min</span>
-                  </div>
-                  <div class="invalid-feedback">Minimum 1 minute</div>
-                </div>
-
-                <!-- Esercizi -->
-                <div class="mb-4">
-                  <label for="{{ form.exercises.id_for_label }}" class="form-label fw-medium text-muted mb-2">
-                    <i class="fas fa-running me-2 text-accent"></i>Exercises
-                  </label>
-                  {{ form.exercises }}
-                  <div class="form-text mt-2">
-                    <i class="fas fa-info-circle me-2 text-accent"></i>Example: Squat 3x12, Bench Press 4x8, Deadlift 3x5
-                  </div>
-                </div>
-
-                <!-- Note -->
-                <div class="mb-4">
-                  <label for="{{ form.notes.id_for_label }}" class="form-label fw-medium text-muted mb-2">
-                    <i class="far fa-sticky-note me-2 text-accent"></i>Notes
-                  </label>
-                  {{ form.notes }}
-                  <div class="form-text mt-2">
-                    <i class="fas fa-info-circle me-2 text-accent"></i>Add any additional details about your workout
-                  </div>
-                </div>
-
-                <!-- Pulsanti -->
-                <div class="d-flex justify-content-between pt-4 mt-3 border-top">
-                  <div>
-                    <a href="{% url 'workout_list' %}" class="btn btn-lg btn-outline-secondary px-4 rounded-pill">
-                      <i class="fas fa-arrow-left me-2"></i>Cancel
-                    </a>
-                  </div>
-                  <div>
-                    <button type="submit" class="btn btn-lg btn-fitness-gradient px-4 rounded-pill">
-                      <i class="fas fa-save me-2"></i>Save Workout
-                    </button>
-                  </div>
-                </div>
-              </form>
+            <h5 class="card-title">{{ workout.workout_type|default:"Custom Workout" }}</h5>
+            {% if workout.notes %}
+              <p class="card-text">{{ workout.notes|truncatewords:12 }}</p>
+            {% endif %}
+          </div>
+          <div class="card-footer bg-transparent border-top border-light border-opacity-10">
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">Click to edit</small>
+              <i class="fas fa-chevron-right workout-arrow"></i>
             </div>
           </div>
         </div>
       </div>
+      {% endfor %}
     </div>
-  </section>
+    {% else %}
+    <div class="empty-workouts">
+      <img src="{% static 'images/no-workouts.svg' %}" alt="No workouts" class="img-fluid">
+      <h3>No Workouts Yet</h3>
+      <p>Start your fitness journey by adding your first workout!</p>
+      <a href="{% url 'workout_create' %}" class="btn btn-gradient">
+        <i class="fas fa-plus me-2"></i>Create Workout
+      </a>
+    </div>
+    {% endif %}
+  </div>
 </div>
+{% endblock %}
 
-<style>
-  /* Layout */
-  .wrapper {
-    min-height: 100vh;
-  }
-
-  /* Card */
-  .card {
-    border-radius: 16px;
-    overflow: hidden;
-    border: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  }
-
-  /* Header */
-  .bg-gradient-fitness {
-    background: linear-gradient(135deg, #6e42c1 0%, #8e64e1 100%);
-  }
-
-  /* Form fields */
-  .form-control, .form-select {
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 2px solid #e0e0e0;
-    transition: all 0.3s ease;
-    background-color: #f8f9fa;
-  }
-
-  textarea.form-control {
-    min-height: 120px;
-  }
-
-  .input-group-text {
-    background-color: white;
-    border: 2px solid #e0e0e0;
-    border-left: none;
-  }
-
-  /* Buttons */
-  .btn-fitness-gradient {
-    background: linear-gradient(135deg, #6e42c1 0%, #8e64e1 100%);
-    color: white;
-    border: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-  }
-
-  .btn-fitness-gradient:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(110, 66, 193, 0.3);
-  }
-
-  .btn-outline-secondary {
-    border: 2px solid #e0e0e0;
-  }
-
-  .btn-outline-light {
-    border: 1px solid rgba(255,255,255,0.5);
-    transition: all 0.3s ease;
-  }
-
-  .btn-outline-light:hover {
-    background-color: rgba(255,255,255,0.1);
-    border-color: white;
-  }
-
-  /* Focus states */
-  .form-control:focus, .form-select:focus {
-    border-color: #6e42c1;
-    box-shadow: 0 0 0 0.25rem rgba(110, 66, 193, 0.15);
-    background-color: white;
-  }
-
-  /* Labels */
-  .form-label {
-    display: block;
-    margin-bottom: 8px;
-  }
-
-  /* Helper text */
-  .form-text {
-    font-size: 0.85rem;
-    color: #6c757d;
-  }
-
-  /* Icons */
-  .text-accent {
-    color: #6e42c1;
-  }
-</style>
-
+{% block extra_js %}
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Form submission handler
-    const form = document.querySelector('form');
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        const submitBtn = this.querySelector('button[type="submit"]');
-        if (submitBtn) {
-          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Saving...';
-          submitBtn.disabled = true;
-        }
-      });
-    }
+    // Add nice hover effects
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.workout-card');
 
-    // Initialize datepicker if needed
-    if (document.getElementById('id_date')) {
-      // Initialize your datepicker here
-      // Example using flatpickr:
-      // flatpickr("#id_date", { dateFormat: "Y-m-d" });
-    }
-  });
+        cards.forEach(card => {
+            // Add animation on load
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+
+            // Animate cards sequentially
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease-out';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * Array.from(cards).indexOf(card));
+
+            // Add pulse effect on hover
+            card.addEventListener('mouseenter', () => {
+                card.style.boxShadow = '0 15px 30px rgba(142, 45, 226, 0.3)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.3)';
+            });
+        });
+    });
 </script>
 {% endblock %}
