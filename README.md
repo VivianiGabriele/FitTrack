@@ -1,5 +1,5 @@
 # FitTrack
-#web-production-9f5e4.up.railway.app
+# web-production-9f5e4.up.railway.app
 Progetto di una fitness_app chiamata FitTrack per il secondo elaborato di PPM
 Il sito funziona in questo modo, sono implementate funzionalità di log in, sing in, cambio password, reset password, log out, durante la registrazione si può scegliere tramite form se essere un utente normale (atleta) oppure un coach.
 In alto a destra c'è la sezione profilo, settings e log out,in Profile si hanno tutti i dati personali, e con la funzionalità che i dati non sono modificabili a meno che non si prema il pulsante Edit Profile, il settings al momento non fa niente ma l'ho lasciato per implementazioni future, per poter cambiare le impostazioni generali della pagina come lingua, privacy etc..
