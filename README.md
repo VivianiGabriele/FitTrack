@@ -14,8 +14,9 @@ Una volta registrati tornati all'home page si può accedere alla pagina dei work
 
 Stessa cosa vale per la pagina Goals, ovvero sia coach che atleti possono registrare i loro obiettivi nel tempo (peso, massa grassa, etc etc..) e anche le misurazioni, che servono per tenere traccia durante il percoso 
 del proprio peso, massa grassa etc etc.. in alto alla pagina si avrà un grafico raffigurante le misurazioni della settimana in corso, uno rafficura il peso e uno la massa grassa. così da avere un riscontro grafico del percorso che si sta svolgendo.
-I coach hanno una pagina dedicata solo per loro Coach Dashboard, in cui, per facilità un coach può scegliere tramite un form di assegnarsi un atleta, avevo inizialmente pensato di fare un applicativo per le palestre così che i coach di palestra potessero tenere 
-sotto controllo gli atleti, nella pagina si avrà una lista di atleti seguiti, si può entrare nel profilo di ognuno attraverso view stats, oppure rimuoverlo, di ogni'atleta il coach sarà in grado di vedere i workouts, i goals e anche le misurazioni, inoltre sarà possibile per il coach commentare le misurazioni dell'atleta, può fare commento visibile anche all'atleta (o solo ai coach
+
+I coach hanno una pagina dedicata solo per loro "Coach Dashboard", in cui, per facilità un coach può scegliere tramite un form di assegnarsi un atleta, avevo inizialmente pensato di fare un applicativo per le palestre così che i coach di palestra potessero tenere 
+sotto controllo gli atleti, nella pagina si avrà una lista di atleti seguiti, si può entrare nel profilo di ognuno attraverso "view stats", oppure rimuoverlo dalla lista atleti seguiti, di ogni'atleta il coach sarà in grado di vedere i workouts, i goals e anche le misurazioni, inoltre sarà possibile per il coach commentare le misurazioni dell'atleta, può fare commento visibile anche all'atleta (o solo ai coach
 supponendo ci siano più coach a seguirlo o anche nutrizionisti oprofessionisti di altro tipo)
 L'atleta nella pagina goals vedrà in basso i commenti lasciti dai coach per le relative misurazioni.
 
