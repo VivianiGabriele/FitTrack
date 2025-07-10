@@ -13,7 +13,7 @@ from .forms import WorkoutForm
 from django.views.generic import DeleteView
 from django.core.exceptions import PermissionDenied
 
-class WorkoutListView(ListView):
+class WorkoutListView(LoginRequiredMixin, ListView):
     model = Workout
     template_name = 'workouts/workout_list.html'
     context_object_name = 'workouts'
