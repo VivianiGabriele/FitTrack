@@ -185,7 +185,7 @@ try:
         EMAIL_USE_TLS = os.getenv('SMTP_USE_TLS', 'True') == 'True'
         EMAIL_HOST_USER = os.getenv('SMTP_USER')
         EMAIL_HOST_PASSWORD = os.getenv('SMTP_PASSWORD')
-        DEFAULT_FROM_EMAIL = os.getenv('SMTP_FROM_EMAIL', 'fittrackappication@gmail.com')
+        DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
         logger.info(f"Configured SMTP with host: {EMAIL_HOST}")
     
     # Impostazioni reset password
