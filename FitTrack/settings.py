@@ -177,6 +177,8 @@ try:
         EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
         logger.info("Using console email backend for development")
     else:
+        EMAIL_HOST_USER = os.getenv('SMTP_USER')  # Se non esiste, diventa None
+        EMAIL_HOST_PASSWORD = os.getenv('SMTP_PASSWORD')  # Se non esiste, diventa None
         EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
         EMAIL_HOST = os.getenv('SMTP_HOST', 'smtp.gmail.com')
         EMAIL_PORT = int(os.getenv('SMTP_PORT', 587))
