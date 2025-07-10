@@ -172,20 +172,23 @@ try:
     CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
     CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-    # Email settings
-    if DEBUG:
-        EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    else:
-        EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-        EMAIL_HOST = os.getenv('EMAIL_HOST')
-        EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
-        EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-        EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-        EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-        DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@fittrack.com')
+    # Email Configuration
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    logger.info("Using console email backend for development")
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.getenv('SMTP_HOST', 'smtp.gmail.com')
+    EMAIL_PORT = int(os.getenv('SMTP_PORT', 587))
+    EMAIL_USE_TLS = os.getenv('SMTP_USE_TLS', 'True') == 'True'
+    EMAIL_HOST_USER = os.getenv('SMTP_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('SMTP_PASSWORD')
+    DEFAULT_FROM_EMAIL = os.getenv('SMTP_FROM_EMAIL', 'noreply@fittrack.com')
+    logger.info(f"Configured SMTP with host: {EMAIL_HOST}")
 
-    logger.info("✅ Settings loaded successfully")
-
+# Impostazioni reset password
+PASSWORD_RESET_TIMEOUT = 86400  # 24 ore in secondi
+PASSWORD_RESET_EMAIL_TEMPLATE = 'registration/password_reset_email.html'
 except Exception as e:
     logger.critical(f"❌ Critical error loading settings: {str(e)}", exc_info=True)
     raise
